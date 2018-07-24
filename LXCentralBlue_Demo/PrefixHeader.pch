@@ -1,0 +1,22 @@
+//
+//  PrefixHeader.pch
+//  LXCentralBlue_Demo
+//
+//  Created by fuzzy@fdore.com on 2018/7/24.
+//  Copyright © 2018年 datangtiancheng. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#if defined(DEBUG)||defined(_DEBUG)
+#define DTLog(fmt, ...) NSLog((@"[函数名:%s] " " [行号:%d] " fmt), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#define DTLog(fmt, ...)
+#endif
+
+#import "DTBLEConstant.h"
+
+
+
+#endif /* PrefixHeader_pch */
