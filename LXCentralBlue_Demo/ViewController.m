@@ -28,6 +28,9 @@
     [manager addObserver:self centralManagerUpdateBlock:^(CBCentralManager *central) {
         NSLog(@"状态发生改变:%d",central.state);
     }];
+    
+    [manager scanPeripheralWithServices:@[] stopDelay:<#(NSTimeInterval)#> block:<#^(NSArray *peripherals)block#>];
+    
 }
 
 

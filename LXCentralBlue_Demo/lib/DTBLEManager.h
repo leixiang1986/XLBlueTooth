@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CBPeripheral+Extension.h"
+#import "PDTBLEManagerActionMananger.h"
 
 typedef void(^DTStateChangedBlock)(NSArray *discoveredPers);  //状态改变的block
 
@@ -32,7 +33,7 @@ typedef void(^DTStateChangedBlock)(NSArray *discoveredPers);  //状态改变的b
 + (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services;
 
 //添加中心设备状态发生改变的监听
-- (void)addObserver:(id)observer centralManagerUpdateBlock:(void (^)(CBCentralManager *))centralManagerUpdateBlock;
+- (void)addObserver:(id)observer centralManagerUpdateBlock:(DTCentralStateUpdateBlock)centralManagerUpdateBlock;
 
 //扫描外设,timeInterval自动停止时间
 - (void)scanPeripheralWithServices:(NSArray <CBUUID *>*)services stopDelay:(NSTimeInterval)timeInterval block:(void(^)(NSArray *peripherals))block;

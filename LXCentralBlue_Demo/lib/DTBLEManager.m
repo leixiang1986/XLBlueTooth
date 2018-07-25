@@ -26,7 +26,7 @@
 @property (nonatomic, strong, readwrite) NSMutableArray *connectedPerArr; //连接的外设
 @property (nonatomic, copy) void (^discoveredBlock)(NSArray *peripherals); //发现的外设
 @property (nonatomic, strong) NSArray <CBUUID *>*defaultServices;   //蓝牙初始化后扫描用的服务UUID数组
-
+@property (nonatomic, strong) PDTBLEManagerActionMananger *actionManager;
 @end
 
 @implementation DTBLEManager
@@ -125,11 +125,9 @@
 }
 
 #pragma mark - public method
-
 //添加中心设备状态发生改变的监听
-- (void)addObserver:(id)observer centralManagerUpdateBlock:(void (^)(CBCentralManager *))centralManagerUpdateBlock {
-    
-    
+- (void)addObserver:(id)observer centralManagerUpdateBlock:(DTCentralStateUpdateBlock)centralManagerUpdateBlock {
+    [self.actionManager addObserver:observer callBack:centralManagerUpdateBlock];
 }
 
 
@@ -306,16 +304,18 @@
 
 //1,中心设备的状态
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    if (central.state == CBManagerStatePoweredOn) {
+    if (central.state == CBCentralManagerStatePoweredOn) {
         for (CBPeripheral *per in self.connectedPers) {
             [self connectPeripheral:per option:nil block:nil];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:DTBLECentralPoweredOnNotification object:nil];
     }
-    else if (central.state == CBManagerStatePoweredOff) {
+    else if (central.state == CBCentralManagerStatePoweredOff) {
         [[NSNotificationCenter defaultCenter] postNotificationName:DTBLECentralPoweredOffNotification object:nil];
     }
-    
+    //回调监听的事件
+    [self.actionManager centralManagerStateUpdate:central];
+
     [self scanServices:nil autoStop:MAXFLOAT];
 }
 
@@ -449,5 +449,12 @@
     return stateOn;
 }
 
+
+- (PDTBLEManagerActionMananger *)actionManager {
+    if (!_actionManager) {
+        _actionManager = [[PDTBLEManagerActionMananger alloc] init];
+    }
+    return _actionManager;
+}
 
 @end
