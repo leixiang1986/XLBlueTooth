@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EEA7739F21086A30001F9F5D /* PDTBLEManagerActionMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = EEA7739E21086A30001F9F5D /* PDTBLEManagerActionMananger.m */; };
+		EEA773A72108839B001F9F5D /* BLEDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEA773A62108839B001F9F5D /* BLEDataManager.m */; };
 		EEAAEEE62106F2AD00D5E92F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEEE52106F2AD00D5E92F /* AppDelegate.m */; };
 		EEAAEEE92106F2AD00D5E92F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEEE82106F2AD00D5E92F /* ViewController.m */; };
 		EEAAEEEC2106F2AD00D5E92F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEAAEEEA2106F2AD00D5E92F /* Main.storyboard */; };
@@ -18,15 +20,10 @@
 		EEAAEF312106F30200D5E92F /* CBCharacteristic+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF182106F30200D5E92F /* CBCharacteristic+Extension.m */; };
 		EEAAEF322106F30200D5E92F /* CBPeripheral+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF1A2106F30200D5E92F /* CBPeripheral+Extension.m */; };
 		EEAAEF332106F30200D5E92F /* CBService+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF1C2106F30200D5E92F /* CBService+Extension.m */; };
-		EEAAEF342106F30200D5E92F /* DTBELCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF1E2106F30200D5E92F /* DTBELCommand.m */; };
 		EEAAEF352106F30200D5E92F /* DTBLEConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF202106F30200D5E92F /* DTBLEConstant.m */; };
 		EEAAEF362106F30200D5E92F /* DTBLEManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF222106F30200D5E92F /* DTBLEManager.m */; };
 		EEAAEF372106F30200D5E92F /* DTBLEPeripherProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF242106F30200D5E92F /* DTBLEPeripherProxy.m */; };
-		EEAAEF382106F30200D5E92F /* DTBLEReceiveDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF262106F30200D5E92F /* DTBLEReceiveDataManager.m */; };
 		EEAAEF392106F30200D5E92F /* DTPeripheralActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF282106F30200D5E92F /* DTPeripheralActionManager.m */; };
-		EEAAEF3A2106F30200D5E92F /* DTReceiveDataCircleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF2A2106F30200D5E92F /* DTReceiveDataCircleModel.m */; };
-		EEAAEF3B2106F30200D5E92F /* DTReceiveDataDelayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF2C2106F30200D5E92F /* DTReceiveDataDelayModel.m */; };
-		EEAAEF3C2106F30200D5E92F /* DTReceiveDataUniversalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF2E2106F30200D5E92F /* DTReceiveDataUniversalModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +44,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EEA7739D21086A30001F9F5D /* PDTBLEManagerActionMananger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDTBLEManagerActionMananger.h; sourceTree = "<group>"; };
+		EEA7739E21086A30001F9F5D /* PDTBLEManagerActionMananger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDTBLEManagerActionMananger.m; sourceTree = "<group>"; };
+		EEA773A4210882D2001F9F5D /* DTBLEHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DTBLEHeader.h; sourceTree = "<group>"; };
+		EEA773A52108839B001F9F5D /* BLEDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BLEDataManager.h; sourceTree = "<group>"; };
+		EEA773A62108839B001F9F5D /* BLEDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLEDataManager.m; sourceTree = "<group>"; };
 		EEAAEEE12106F2AD00D5E92F /* LXCentralBlue_Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LXCentralBlue_Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEAAEEE42106F2AD00D5E92F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEAAEEE52106F2AD00D5E92F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -69,24 +71,14 @@
 		EEAAEF1A2106F30200D5E92F /* CBPeripheral+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBPeripheral+Extension.m"; sourceTree = "<group>"; };
 		EEAAEF1B2106F30200D5E92F /* CBService+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBService+Extension.h"; sourceTree = "<group>"; };
 		EEAAEF1C2106F30200D5E92F /* CBService+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBService+Extension.m"; sourceTree = "<group>"; };
-		EEAAEF1D2106F30200D5E92F /* DTBELCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBELCommand.h; sourceTree = "<group>"; };
-		EEAAEF1E2106F30200D5E92F /* DTBELCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBELCommand.m; sourceTree = "<group>"; };
 		EEAAEF1F2106F30200D5E92F /* DTBLEConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBLEConstant.h; sourceTree = "<group>"; };
 		EEAAEF202106F30200D5E92F /* DTBLEConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBLEConstant.m; sourceTree = "<group>"; };
 		EEAAEF212106F30200D5E92F /* DTBLEManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBLEManager.h; sourceTree = "<group>"; };
 		EEAAEF222106F30200D5E92F /* DTBLEManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBLEManager.m; sourceTree = "<group>"; };
 		EEAAEF232106F30200D5E92F /* DTBLEPeripherProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBLEPeripherProxy.h; sourceTree = "<group>"; };
 		EEAAEF242106F30200D5E92F /* DTBLEPeripherProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBLEPeripherProxy.m; sourceTree = "<group>"; };
-		EEAAEF252106F30200D5E92F /* DTBLEReceiveDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBLEReceiveDataManager.h; sourceTree = "<group>"; };
-		EEAAEF262106F30200D5E92F /* DTBLEReceiveDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBLEReceiveDataManager.m; sourceTree = "<group>"; };
 		EEAAEF272106F30200D5E92F /* DTPeripheralActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTPeripheralActionManager.h; sourceTree = "<group>"; };
 		EEAAEF282106F30200D5E92F /* DTPeripheralActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTPeripheralActionManager.m; sourceTree = "<group>"; };
-		EEAAEF292106F30200D5E92F /* DTReceiveDataCircleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTReceiveDataCircleModel.h; sourceTree = "<group>"; };
-		EEAAEF2A2106F30200D5E92F /* DTReceiveDataCircleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTReceiveDataCircleModel.m; sourceTree = "<group>"; };
-		EEAAEF2B2106F30200D5E92F /* DTReceiveDataDelayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTReceiveDataDelayModel.h; sourceTree = "<group>"; };
-		EEAAEF2C2106F30200D5E92F /* DTReceiveDataDelayModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTReceiveDataDelayModel.m; sourceTree = "<group>"; };
-		EEAAEF2D2106F30200D5E92F /* DTReceiveDataUniversalModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTReceiveDataUniversalModel.h; sourceTree = "<group>"; };
-		EEAAEF2E2106F30200D5E92F /* DTReceiveDataUniversalModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTReceiveDataUniversalModel.m; sourceTree = "<group>"; };
 		EEAAEF3E2106F39D00D5E92F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +107,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EEA773A021087DC5001F9F5D /* private */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = private;
+			sourceTree = "<group>";
+		};
 		EEAAEED82106F2AD00D5E92F = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +142,8 @@
 				EEAAEEE52106F2AD00D5E92F /* AppDelegate.m */,
 				EEAAEEE72106F2AD00D5E92F /* ViewController.h */,
 				EEAAEEE82106F2AD00D5E92F /* ViewController.m */,
+				EEA773A52108839B001F9F5D /* BLEDataManager.h */,
+				EEA773A62108839B001F9F5D /* BLEDataManager.m */,
 				EEAAEF3E2106F39D00D5E92F /* PrefixHeader.pch */,
 				EEAAEEEA2106F2AD00D5E92F /* Main.storyboard */,
 				EEAAEEED2106F2B700D5E92F /* Assets.xcassets */,
@@ -174,30 +175,24 @@
 		EEAAEF162106F30200D5E92F /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				EEA773A021087DC5001F9F5D /* private */,
 				EEAAEF172106F30200D5E92F /* CBCharacteristic+Extension.h */,
 				EEAAEF182106F30200D5E92F /* CBCharacteristic+Extension.m */,
 				EEAAEF192106F30200D5E92F /* CBPeripheral+Extension.h */,
 				EEAAEF1A2106F30200D5E92F /* CBPeripheral+Extension.m */,
 				EEAAEF1B2106F30200D5E92F /* CBService+Extension.h */,
 				EEAAEF1C2106F30200D5E92F /* CBService+Extension.m */,
-				EEAAEF1D2106F30200D5E92F /* DTBELCommand.h */,
-				EEAAEF1E2106F30200D5E92F /* DTBELCommand.m */,
 				EEAAEF1F2106F30200D5E92F /* DTBLEConstant.h */,
 				EEAAEF202106F30200D5E92F /* DTBLEConstant.m */,
 				EEAAEF212106F30200D5E92F /* DTBLEManager.h */,
 				EEAAEF222106F30200D5E92F /* DTBLEManager.m */,
+				EEA7739D21086A30001F9F5D /* PDTBLEManagerActionMananger.h */,
+				EEA7739E21086A30001F9F5D /* PDTBLEManagerActionMananger.m */,
 				EEAAEF232106F30200D5E92F /* DTBLEPeripherProxy.h */,
 				EEAAEF242106F30200D5E92F /* DTBLEPeripherProxy.m */,
-				EEAAEF252106F30200D5E92F /* DTBLEReceiveDataManager.h */,
-				EEAAEF262106F30200D5E92F /* DTBLEReceiveDataManager.m */,
 				EEAAEF272106F30200D5E92F /* DTPeripheralActionManager.h */,
 				EEAAEF282106F30200D5E92F /* DTPeripheralActionManager.m */,
-				EEAAEF292106F30200D5E92F /* DTReceiveDataCircleModel.h */,
-				EEAAEF2A2106F30200D5E92F /* DTReceiveDataCircleModel.m */,
-				EEAAEF2B2106F30200D5E92F /* DTReceiveDataDelayModel.h */,
-				EEAAEF2C2106F30200D5E92F /* DTReceiveDataDelayModel.m */,
-				EEAAEF2D2106F30200D5E92F /* DTReceiveDataUniversalModel.h */,
-				EEAAEF2E2106F30200D5E92F /* DTReceiveDataUniversalModel.m */,
+				EEA773A4210882D2001F9F5D /* DTBLEHeader.h */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -332,21 +327,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EEAAEF3C2106F30200D5E92F /* DTReceiveDataUniversalModel.m in Sources */,
 				EEAAEF332106F30200D5E92F /* CBService+Extension.m in Sources */,
-				EEAAEF382106F30200D5E92F /* DTBLEReceiveDataManager.m in Sources */,
 				EEAAEEE92106F2AD00D5E92F /* ViewController.m in Sources */,
 				EEAAEF362106F30200D5E92F /* DTBLEManager.m in Sources */,
 				EEAAEF322106F30200D5E92F /* CBPeripheral+Extension.m in Sources */,
 				EEAAEF312106F30200D5E92F /* CBCharacteristic+Extension.m in Sources */,
 				EEAAEF372106F30200D5E92F /* DTBLEPeripherProxy.m in Sources */,
-				EEAAEF3B2106F30200D5E92F /* DTReceiveDataDelayModel.m in Sources */,
 				EEAAEF392106F30200D5E92F /* DTPeripheralActionManager.m in Sources */,
-				EEAAEF342106F30200D5E92F /* DTBELCommand.m in Sources */,
+				EEA7739F21086A30001F9F5D /* PDTBLEManagerActionMananger.m in Sources */,
 				EEAAEEF42106F2B700D5E92F /* main.m in Sources */,
 				EEAAEEE62106F2AD00D5E92F /* AppDelegate.m in Sources */,
-				EEAAEF3A2106F30200D5E92F /* DTReceiveDataCircleModel.m in Sources */,
 				EEAAEF352106F30200D5E92F /* DTBLEConstant.m in Sources */,
+				EEA773A72108839B001F9F5D /* BLEDataManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,7 +511,7 @@
 				DEVELOPMENT_TEAM = TAF54CUBED;
 				GCC_PREFIX_HEADER = /Users/leifayang/Desktop/temp/LXCentralBlue_Demo/LXCentralBlue_Demo/PrefixHeader.pch;
 				INFOPLIST_FILE = LXCentralBlue_Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -538,7 +530,7 @@
 				DEVELOPMENT_TEAM = TAF54CUBED;
 				GCC_PREFIX_HEADER = /Users/leifayang/Desktop/temp/LXCentralBlue_Demo/LXCentralBlue_Demo/PrefixHeader.pch;
 				INFOPLIST_FILE = LXCentralBlue_Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -119,14 +119,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
 
 
 
-////监听事件的字典集合
-//- (void)setObserverAndCallBacks:(NSDictionary *)observerAndCallBacks {
-//    objc_setAssociatedObject(self, &kObserveAndCallbackKey, observerAndCallBacks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
-//
-//- (NSDictionary *)observerAndCallBacks {
-//    return objc_getAssociatedObject(self, &kObserveAndCallbackKey);
-//}
+
 
 //读取数据的特征
 - (void)setReadDataCharacteristic:(CBCharacteristic *)readDataCharacteristic {
@@ -137,14 +130,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     return objc_getAssociatedObject(self, &kReadDataCharacteristicKey);
 }
 
-////通知的特征，作为监听方法的传入参数
-//- (void)setNotifyDataCharacteristic:(CBCharacteristic *)notifyDataCharacteristic {
-//    objc_setAssociatedObject(self, &kNotifyDataCharacteristicKey, notifyDataCharacteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
-//
-//- (CBCharacteristic *)notifyDataCharacteristic {
-//    return objc_getAssociatedObject(self, &kNotifyDataCharacteristicKey);
-//}
+
 
 //
 - (void)setNotifyActionManager:(DTPeripheralActionManager *)notifyActionManager {
@@ -165,23 +151,20 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     return (self.state == CBPeripheralStateConnected);
 }
 
+- (void)setLocalName:(NSString *)localName {
+    if (localName == nil) {
+        return;
+    }
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] initWithDictionary:self.advertisementData];
+    [dic setObject:localName forKey:@"kCBAdvDataLocalName"];
+    self.advertisementData = [dic copy];
+}
+
+- (NSString *)localName {
+    return self.advertisementData[@"kCBAdvDataLocalName"];
+}
 
 
-
-//- (void)setWriteActionManager:(DTPeripheralActionManager *)writeActionManager {
-//    objc_setAssociatedObject(self, &kWriteActionManagerKey, writeActionManager, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
-//
-//- (DTPeripheralActionManager *)writeActionManager {
-//    DTPeripheralActionManager *manager = objc_getAssociatedObject(self, &kWriteActionManagerKey);
-//    if (!manager) {
-//        manager = [[DTPeripheralActionManager alloc] init];
-//        manager.peripheral = self;
-//        [self setWriteActionManager:manager];
-//    }
-//    return manager;
-//
-//}
 
 
 #pragma mark - 中心设备发起事件的回调block,中心设备对每个外设的操作，需要将回调绑定到具体的外设上
@@ -231,32 +214,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     return objc_getAssociatedObject(self, &kDiscoverCharacteristicsBlockKey);
 }
 
-////读取特征值的回调block
-//- (void)setReadCharacteristicValueBlock:(DTReadCharacteristicValueBlock)readCharacteristicValueBlock {
-//    objc_setAssociatedObject(self, &kReadCharacteristicBlockKey, readCharacteristicValueBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-//}
-//
-//- (DTReadCharacteristicValueBlock)readCharacteristicValueBlock {
-//    return objc_getAssociatedObject(self, &kReadCharacteristicBlockKey);
-//}
 
-////写入数据的回调block
-//- (void)setWriteDataBlock:(DTWriteDataBlock)writeDataBlock {
-//    objc_setAssociatedObject(self, &kWriteDataBlockKey, writeDataBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-//}
-//
-//- (DTWriteDataBlock)writeDataBlock {
-//    return objc_getAssociatedObject(self, &kWriteDataBlockKey);
-//}
-
-////监听的block
-//- (void)setObserveBlock:(DTObserveCharacteristicValueBlock)observeBlock {
-//    objc_setAssociatedObject(self, &kObserverBlockKey, observeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-//}
-//
-//- (DTObserveCharacteristicValueBlock)observeBlock {
-//    return objc_getAssociatedObject(self, &kObserverBlockKey);
-//}
 
 
 #pragma mark - 外设发起事件及回调方法
@@ -264,7 +222,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     if (!self.delegate) {
         DTLog(@"没有设置代理==发现服务");
     }
-    if (![[DTBLEManager shareManager] checkStateWithToast:NO]) {
+    if (![[DTBLEManager shareManager] checkState]) {
         return;
     }
     [self setDiscoverServicesBlock:block];
@@ -277,7 +235,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     if (!self.delegate) {
         DTLog(@"没有设置代理==读取rssi");
     }
-    if (![[DTBLEManager shareManager] checkStateWithToast:NO] && self.isConnected) {
+    if (![[DTBLEManager shareManager] checkState] && self.isConnected) {
         return;
     }
     [self setReadRssiBlock:block];
@@ -288,7 +246,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     if (!self.delegate) {
         DTLog(@"没有设置代理==发现特征的");
     }
-    if (![[DTBLEManager shareManager] checkStateWithToast:NO]) {
+    if (![[DTBLEManager shareManager] checkState]) {
         return;
     }
     [self setDiscoverCharacteristicsBlock:block];
@@ -297,61 +255,69 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
 }
 
 //读取特征值
-- (void)readValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block {
+- (BOOL)readValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block {
     if (characteristic == nil || (characteristic.properties & CBCharacteristicPropertyRead) != CBCharacteristicPropertyRead) {
-        return;
+        return NO;
     }
     
     [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:DTPeripheralActionType_read block:block];
     [self readValueForCharacteristic:characteristic];
+    return YES;
 }
 
 //监听某个特征
-- (void)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block {
+- (BOOL)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block {
     if (characteristic == nil || (characteristic.properties & CBCharacteristicPropertyNotify) != CBCharacteristicPropertyNotify) {
-        return;
+        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_parameterError userInfo:@{@"msg":@"parameter error"}];
+        block(nil,nil,error);
+        return NO;
     }
     
-    if (![[DTBLEManager shareManager] checkStateWithToast:YES]) {
-        return;
-    }
     
+    if (![[DTBLEManager shareManager] checkState]) {
+        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_powerOff userInfo:@{@"msg":@"powered off"}];
+        block(nil,nil,error);
+        return NO;
+    }
     [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:DTPeripheralActionType_notify block:block];
     [self setNotifyValue:YES forCharacteristic:characteristic];
+    return YES;
 }
 
 //取消监听某个特征
-- (void)cancelObserveValueForCharacteristic:(CBCharacteristic *)characteristic {
+- (BOOL)cancelObserveValueForCharacteristic:(CBCharacteristic *)characteristic {
     if (characteristic == nil || (characteristic.properties & CBCharacteristicPropertyNotify) != CBCharacteristicPropertyNotify) {
-        return;
-    }
-    if (![[DTBLEManager shareManager] checkStateWithToast:YES]) {
-        return;
+        return NO;
     }
     [self.notifyActionManager cancelObserveForCharacteristic:characteristic forPeripheral:self];
+    if (![[DTBLEManager shareManager] checkState]) {
+        return NO;
+    }
+    
     [self setNotifyValue:NO forCharacteristic:characteristic];
+    return YES;
 }
 
 //写数据
-- (void)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block {
+- (BOOL)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block {
     if (characteristic == nil || data == nil) {
         if (block) {
             NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_parameterError userInfo:@{@"msg":@"没有data或characteristic"}];
             block(nil,nil,error);
         }
-        return;
+        return NO;
     }
     
-    if (![[DTBLEManager shareManager] checkStateWithToast:YES]) {
+    if (![[DTBLEManager shareManager] checkState]) {
         NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_powerOff userInfo:@{@"msg":@"powered off"}];
         block(nil,nil,error);
-        return;
+        return NO;
     }
     
     if (self.state != CBPeripheralStateConnected) {
         NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_notConnected userInfo:@{@"msg":@"not connected"}];
         block(nil,nil,error);
-        return;
+        return NO;
     }
     DTLog(@"写入了数据:%@===characteristic:%@",data,characteristic);
     if ((characteristic.properties & CBCharacteristicPropertyWrite) == CBCharacteristicPropertyWrite) {
@@ -361,6 +327,7 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     else if ((characteristic.properties & CBCharacteristicPropertyWriteWithoutResponse) == CBCharacteristicPropertyWriteWithoutResponse) {
         [self writeValue:data forCharacteristic:characteristic type:(CBCharacteristicWriteWithoutResponse)];
     }
+    return YES;
 }
 
 //清除绑定的回调block,断开连接后需要清除回调的block

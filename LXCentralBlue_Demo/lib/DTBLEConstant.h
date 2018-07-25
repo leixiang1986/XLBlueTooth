@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface DTBLEConstant : NSObject
 extern NSString *const DTBLECentralPoweredOnNotification;
@@ -35,5 +36,8 @@ typedef NS_ENUM(NSInteger, DTBlueToothErrorCode) {
     DTBlueToothErrorCode_parameterError,
     DTBlueToothErrorCode_other
 };
+
+typedef void(^DTCentralStateUpdateBlock)(CBCentralManager *manager);
+
 
 @end

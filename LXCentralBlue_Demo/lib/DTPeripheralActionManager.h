@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, DTPeripheralActionType) {
 typedef void(^DTObserveCharacteristicValueBlock)(CBPeripheral *peripheral,CBCharacteristic *characteristc, NSError *error); //监听特征值
 
 @interface DTPeripheralActionModel : NSObject
-@property (nonatomic, strong) CBCharacteristic *ch;
+@property (nonatomic, weak) CBCharacteristic *ch;
 @property (nonatomic, weak) id observer;                              //弱引用
 @property (nonatomic, copy) DTObserveCharacteristicValueBlock block;
 //读取和写入的事件在调用过后就移除;如果是监听，调用过后事件不移除

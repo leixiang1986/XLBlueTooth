@@ -29,6 +29,8 @@ typedef void(^DTStateChangedBlock)(NSArray *discoveredPers);  //状态改变的b
 //在初始化蓝牙中心设备后状态为poweredOn后，搜索services。如果搜索的services为空那么用shareManager初始化
 + (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services;
 
++ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services;
+
 //添加中心设备状态发生改变的监听
 - (void)addObserver:(id)observer centralManagerUpdateBlock:(void (^)(CBCentralManager *))centralManagerUpdateBlock;
 
@@ -55,7 +57,7 @@ typedef void(^DTStateChangedBlock)(NSArray *discoveredPers);  //状态改变的b
 //从发现的数组
 - (void)removeFromDiscovers:(CBPeripheral *)per;
 
-- (BOOL)checkStateWithToast:(BOOL)toast;
+- (BOOL)checkState;
 
 
 

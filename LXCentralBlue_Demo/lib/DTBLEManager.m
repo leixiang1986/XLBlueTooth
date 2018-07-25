@@ -19,8 +19,6 @@
  
  */
 
-
-
 @interface DTBLEManager()<CBCentralManagerDelegate,CBPeripheralDelegate>
 @property (nonatomic, strong, readwrite) CBCentralManager *centralManager;
 @property (nonatomic, strong) NSMutableArray *reconnectPerArr;  //自动重连数组
@@ -28,6 +26,7 @@
 @property (nonatomic, strong, readwrite) NSMutableArray *connectedPerArr; //连接的外设
 @property (nonatomic, copy) void (^discoveredBlock)(NSArray *peripherals); //发现的外设
 @property (nonatomic, strong) NSArray <CBUUID *>*defaultServices;   //蓝牙初始化后扫描用的服务UUID数组
+
 @end
 
 @implementation DTBLEManager
@@ -37,24 +36,55 @@
 }
 
 + (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services {
+    return [self shareManagerWithIdentifier:nil services:services];
     
+}
+
++ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services {
     static DTBLEManager *instance = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[DTBLEManager alloc] initWithServices:services];
+        instance = [[DTBLEManager alloc] initWithIdentifier:identifier services:services];
     });
     
     return instance;
 }
 
-
-
-- (instancetype)initWithServices:(NSArray <CBUUID *>*)services {
+- (instancetype)initWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services {
     self = [super init];
     if (self) {
         _defaultServices = services;
-        _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+        
+#if  __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_0
+        NSDictionary *options = nil;
+        if (identifier.length) {
+            options = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     //蓝牙power没打开时alert提示框
+                                     [NSNumber numberWithBool:YES],CBCentralManagerOptionShowPowerAlertKey,
+                                     //重设centralManager恢复的IdentifierKey
+                                     identifier,CBCentralManagerOptionRestoreIdentifierKey,
+                                     nil];
+        }
+        else {
+            options = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     //蓝牙power没打开时alert提示框
+                       [NSNumber numberWithBool:YES],CBCentralManagerOptionShowPowerAlertKey, nil
+                                    ];
+        }
+#else
+        NSDictionary *options = nil;
+#endif
+      
+        NSArray *backgroundModes = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UIBackgroundModes"];
+        if ([backgroundModes containsObject:@"bluetooth-central"]) {
+            //后台模式
+            _centralManager = [[CBCentralManager alloc]initWithDelegate:self queue:nil options:options];
+        }
+        else {
+            //非后台模式
+            _centralManager = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
+        }
     }
     return self;
 }
@@ -95,6 +125,14 @@
 }
 
 #pragma mark - public method
+
+//添加中心设备状态发生改变的监听
+- (void)addObserver:(id)observer centralManagerUpdateBlock:(void (^)(CBCentralManager *))centralManagerUpdateBlock {
+    
+    
+}
+
+
 //清除发现的数据，刷新数据时，重新扫描
 - (void)clearDiscoveredPersExceptConnectedPer:(BOOL)except {
     for (CBPeripheral *peripheral in self.discoveredPers) {
@@ -120,16 +158,17 @@
 
 //连接并自动停止扫描
 - (BOOL)scanServices:(NSArray <CBUUID *>*)services autoStop:(NSTimeInterval)timeInterval{
-    BOOL stateOn = [self checkStateWithToast:YES];
-    if (stateOn) {
+    if (self.centralManager.state == CBCentralManagerStatePoweredOn) {
         [self retrieveConnectedPeripherals];
         [self.centralManager scanForPeripheralsWithServices:services options:nil];
         if (timeInterval <= 0) {
             timeInterval = 5;
         }
         [self performSelector:@selector(stopScan) withObject:nil afterDelay:timeInterval];
+        return YES;
     }
-    return stateOn;
+
+    return NO;
 }
 
 - (void)retrievePeripherals {
@@ -400,36 +439,15 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:DTBLEDisconnectedNotification object:peripheral];
 }
 
-//- (BOOL)checkStateWithToast:(BOOL)toast {
-//    BOOL stateOn = NO;
-//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//    if (self.centralManager.state == CBCentralManagerStateUnknown) {
-//
-////        [UITools showToastMsg:@"Bluetooth unknown!" inView:window delay:2];
-//    }
-//    else if (self.centralManager.state == CBCentralManagerStateResetting) {
-//
-//        [UITools showToastMsg:@"Bluetooth resetting!" inView:window delay:2];
-//    }
-//    else if (self.centralManager.state == CBCentralManagerStateUnsupported) {
-//
-//        [UITools showToastMsg:@"Bluetooth unsupported!" inView:window delay:2];
-//    }
-//    else if (self.centralManager.state == CBCentralManagerStateUnauthorized) {
-//
-//        [UITools showToastMsg:@"Bluetooth unauthorized!" inView:window delay:2];
-//    }
-//    else if (self.centralManager.state == CBCentralManagerStatePoweredOff){
-//
-//        [UITools showToastMsg:@"Bluetooth powered off!" inView:window delay:2];
-//    }
-//    else if (self.centralManager.state == CBCentralManagerStatePoweredOn) {
-//
-//        stateOn = YES;
-//    }
-//
-//    return stateOn;
-//}
+- (BOOL)checkState {
+    BOOL stateOn = NO;
+    if (self.centralManager.state == CBCentralManagerStatePoweredOn) {
+
+        stateOn = YES;
+    }
+
+    return stateOn;
+}
 
 
 @end

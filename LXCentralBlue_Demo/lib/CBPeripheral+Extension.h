@@ -22,7 +22,7 @@ typedef void(^DTWriteDataBlock)(CBPeripheral *peripheral, CBCharacteristic *char
 
 @interface CBPeripheral (Extension)
 @property (nonatomic, strong) NSNumber *rssi;
-
+@property (nonatomic, copy) NSString *localName;
 @property (nonatomic, strong) NSDictionary *advertisementData;  //广播数据
 
 @property (nonatomic, assign) BOOL isReconnect;                 //是否是自动重连，如果是，在断开后不删除掉绑定的回调事件，否则在断开后删除掉之前绑定的回调事件
@@ -53,17 +53,17 @@ typedef void(^DTWriteDataBlock)(CBPeripheral *peripheral, CBCharacteristic *char
 - (void)discoverCharacteristics:(NSArray<CBUUID *> *)characteristicUUIDs forService:(CBService *)service block:(DTDiscoverCharacteriticsBlock)block;
 
 //读取特征值
-- (void)readValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block;
+- (BOOL)readValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block;
 
 //当写入类型是CBCharacteristicWriteWithResponse时，block返回写入是否成功
 //如果写入类型为不需要返回就用系统的，如果是数据上会以通知的形式返回，那么在通知的block中接收
-- (void)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block;
+- (BOOL)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block;
 
 //监听某个特征值的notify,对oberver是弱引用，如果observer 销毁，不会回调block给observer
-- (void)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block;
+- (BOOL)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block;
 
 //取消监听某个特征
-- (void)cancelObserveValueForCharacteristic:(CBCharacteristic *)characteristic;
+- (BOOL)cancelObserveValueForCharacteristic:(CBCharacteristic *)characteristic;
 
 //清除绑定的回调block和传入参数
 - (void)clearBindDatas;
