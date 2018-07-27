@@ -24,6 +24,11 @@
 		EEAAEF362106F30200D5E92F /* DTBLEManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF222106F30200D5E92F /* DTBLEManager.m */; };
 		EEAAEF372106F30200D5E92F /* DTBLEPeripherProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF242106F30200D5E92F /* DTBLEPeripherProxy.m */; };
 		EEAAEF392106F30200D5E92F /* DTPeripheralActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAAEF282106F30200D5E92F /* DTPeripheralActionManager.m */; };
+		EEDA93ED2109639300FB67BF /* DetatilViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDA93EB2109639300FB67BF /* DetatilViewController.m */; };
+		EEDA93EE2109639300FB67BF /* DetatilViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EEDA93EC2109639300FB67BF /* DetatilViewController.xib */; };
+		EEDA93F221096B0E00FB67BF /* DeviceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDA93F021096B0E00FB67BF /* DeviceTableViewCell.m */; };
+		EEDA93F321096B0E00FB67BF /* DeviceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EEDA93F121096B0E00FB67BF /* DeviceTableViewCell.xib */; };
+		EEDA93F62109C63300FB67BF /* DTBELCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDA93F52109C63200FB67BF /* DTBELCommand.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +85,14 @@
 		EEAAEF272106F30200D5E92F /* DTPeripheralActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTPeripheralActionManager.h; sourceTree = "<group>"; };
 		EEAAEF282106F30200D5E92F /* DTPeripheralActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTPeripheralActionManager.m; sourceTree = "<group>"; };
 		EEAAEF3E2106F39D00D5E92F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		EEDA93EA2109639300FB67BF /* DetatilViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetatilViewController.h; sourceTree = "<group>"; };
+		EEDA93EB2109639300FB67BF /* DetatilViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetatilViewController.m; sourceTree = "<group>"; };
+		EEDA93EC2109639300FB67BF /* DetatilViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetatilViewController.xib; sourceTree = "<group>"; };
+		EEDA93EF21096B0E00FB67BF /* DeviceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceTableViewCell.h; sourceTree = "<group>"; };
+		EEDA93F021096B0E00FB67BF /* DeviceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceTableViewCell.m; sourceTree = "<group>"; };
+		EEDA93F121096B0E00FB67BF /* DeviceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceTableViewCell.xib; sourceTree = "<group>"; };
+		EEDA93F42109C63100FB67BF /* DTBELCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBELCommand.h; sourceTree = "<group>"; };
+		EEDA93F52109C63200FB67BF /* DTBELCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBELCommand.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +155,14 @@
 				EEAAEEE52106F2AD00D5E92F /* AppDelegate.m */,
 				EEAAEEE72106F2AD00D5E92F /* ViewController.h */,
 				EEAAEEE82106F2AD00D5E92F /* ViewController.m */,
+				EEDA93F42109C63100FB67BF /* DTBELCommand.h */,
+				EEDA93F52109C63200FB67BF /* DTBELCommand.m */,
+				EEDA93EA2109639300FB67BF /* DetatilViewController.h */,
+				EEDA93EB2109639300FB67BF /* DetatilViewController.m */,
+				EEDA93EC2109639300FB67BF /* DetatilViewController.xib */,
+				EEDA93EF21096B0E00FB67BF /* DeviceTableViewCell.h */,
+				EEDA93F021096B0E00FB67BF /* DeviceTableViewCell.m */,
+				EEDA93F121096B0E00FB67BF /* DeviceTableViewCell.xib */,
 				EEA773A52108839B001F9F5D /* BLEDataManager.h */,
 				EEA773A62108839B001F9F5D /* BLEDataManager.m */,
 				EEAAEF3E2106F39D00D5E92F /* PrefixHeader.pch */,
@@ -264,6 +285,11 @@
 				TargetAttributes = {
 					EEAAEEE02106F2AD00D5E92F = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					EEAAEEF82106F2B700D5E92F = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -300,9 +326,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEDA93EE2109639300FB67BF /* DetatilViewController.xib in Resources */,
 				EEAAEEF12106F2B700D5E92F /* LaunchScreen.storyboard in Resources */,
 				EEAAEEEE2106F2B700D5E92F /* Assets.xcassets in Resources */,
 				EEAAEEEC2106F2AD00D5E92F /* Main.storyboard in Resources */,
+				EEDA93F321096B0E00FB67BF /* DeviceTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,14 +358,17 @@
 				EEAAEF332106F30200D5E92F /* CBService+Extension.m in Sources */,
 				EEAAEEE92106F2AD00D5E92F /* ViewController.m in Sources */,
 				EEAAEF362106F30200D5E92F /* DTBLEManager.m in Sources */,
+				EEDA93F62109C63300FB67BF /* DTBELCommand.m in Sources */,
 				EEAAEF322106F30200D5E92F /* CBPeripheral+Extension.m in Sources */,
 				EEAAEF312106F30200D5E92F /* CBCharacteristic+Extension.m in Sources */,
 				EEAAEF372106F30200D5E92F /* DTBLEPeripherProxy.m in Sources */,
 				EEAAEF392106F30200D5E92F /* DTPeripheralActionManager.m in Sources */,
 				EEA7739F21086A30001F9F5D /* PDTBLEManagerActionMananger.m in Sources */,
 				EEAAEEF42106F2B700D5E92F /* main.m in Sources */,
+				EEDA93F221096B0E00FB67BF /* DeviceTableViewCell.m in Sources */,
 				EEAAEEE62106F2AD00D5E92F /* AppDelegate.m in Sources */,
 				EEAAEF352106F30200D5E92F /* DTBLEConstant.m in Sources */,
+				EEDA93ED2109639300FB67BF /* DetatilViewController.m in Sources */,
 				EEA773A72108839B001F9F5D /* BLEDataManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -39,5 +39,8 @@ typedef NS_ENUM(NSInteger, DTBlueToothErrorCode) {
 
 typedef void(^DTCentralStateUpdateBlock)(CBCentralManager *manager);
 
+#define kScreenSize   [UIScreen mainScreen].bounds.size
+#define weakSelf(weakSelf) __weak typeof(self) (weakSelf) = self;
+
 
 @end

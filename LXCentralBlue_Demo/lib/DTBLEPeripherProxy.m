@@ -152,7 +152,7 @@
     DTLog(@"==7,didUpdateValueForCharacteristic:%@===%@====外设",characteristic,error);
     for (CBPeripheral *per in self.delegatedPeripherals) {
         if ([per.notifyActionManager hasObserveForCharatcteristic:characteristic forPeripheral:peripheral] && (characteristic.notifyAble || characteristic.readAble)) { //如果有监听
-            [peripheral.notifyActionManager receiveDataFromCharacteristic:characteristic forPeripheral:peripheral error:error];
+            [peripheral.notifyActionManager receiveDataWithType:(DTPeripheralRecvType_notifyValue) characteristic:characteristic forPeripheral:peripheral error:error];
         }
         DTLog(@"接收到数据的通知:%@===%@",peripheral,per);
     }
@@ -163,7 +163,7 @@
     //    characteristic.value
     DTLog(@"==8,didWriteValueForCharacteristic:%@===%@",characteristic,error);
     if ([peripheral.notifyActionManager hasObserveForCharatcteristic:characteristic forPeripheral:peripheral]) {
-        [peripheral.notifyActionManager receiveDataFromCharacteristic:characteristic forPeripheral:peripheral error:error];
+        [peripheral.notifyActionManager receiveDataWithType:(DTPeripheralRecvType_writeValue) characteristic:characteristic forPeripheral:peripheral error:error];
     }
 }
 
@@ -171,6 +171,9 @@
 //通过调用setNotifyValue:forCharacteristic:
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     DTLog(@"==9,didUpdateNotificationStateForCharacteristic:%@==%@",characteristic,error);
+    if ([peripheral.notifyActionManager hasObserveForCharatcteristic:characteristic forPeripheral:peripheral]) {
+        [peripheral.notifyActionManager receiveDataWithType:(DTPeripheralRecvType_notifyState) characteristic:characteristic forPeripheral:peripheral error:error];
+    }
 }
 
 

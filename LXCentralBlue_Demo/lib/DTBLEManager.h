@@ -28,15 +28,16 @@ typedef void(^DTStateChangedBlock)(NSArray *discoveredPers);  //状态改变的b
 + (instancetype)shareManager;
 
 //在初始化蓝牙中心设备后状态为poweredOn后，搜索services。如果搜索的services为空那么用shareManager初始化
-+ (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services;
-
-+ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services;
+//block返回搜索到的外设
++ (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services block:(DTStateChangedBlock)block;
+//block返回搜索到的外设
++ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services block:(DTStateChangedBlock)block;
 
 //添加中心设备状态发生改变的监听
 - (void)addObserver:(id)observer centralManagerUpdateBlock:(DTCentralStateUpdateBlock)centralManagerUpdateBlock;
 
 //扫描外设,timeInterval自动停止时间
-- (void)scanPeripheralWithServices:(NSArray <CBUUID *>*)services stopDelay:(NSTimeInterval)timeInterval block:(void(^)(NSArray *peripherals))block;
+- (void)scanPeripheralWithServices:(NSArray <CBUUID *>*)services stopDelay:(NSTimeInterval)timeInterval block:(DTStateChangedBlock)block;
 
 - (void)stopScan;
 

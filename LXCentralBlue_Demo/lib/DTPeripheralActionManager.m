@@ -101,8 +101,8 @@
     
     [self.dic removeObjectForKey:key];
 }
-
-- (void)receiveDataFromCharacteristic:(CBCharacteristic *)ch forPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+//收到数据的处理
+- (void)receiveDataWithType:(DTPeripheralRecvType)type characteristic:(CBCharacteristic *)ch forPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     if (ch == nil) {
         return;
     }
@@ -122,13 +122,13 @@
             [indexSet addIndex:idx];
         }
         
-        BOOL check = peripheral == nil ? YES : [peripheral.identifier isEqual:model.peripheral.identifier];
+//        BOOL check = peripheral == nil ? YES : [peripheral.identifier isEqual:model.peripheral.identifier];
         
-        if (ch.notifyAble && model.type == DTPeripheralActionType_notify && check && [ch isEqual:model.ch]) {
+        if (ch.notifyAble && model.type == DTPeripheralActionType_notify  && [ch isEqual:model.ch] && type == DTPeripheralRecvType_notifyValue) {
             model.block(self.peripheral, ch, error);
         }
         else if (ch.readAble && [ch isEqual:model.ch]
-            && (model.type == DTPeripheralActionType_read) && check) { //如果是可读数据
+                 && (model.type == DTPeripheralActionType_read) && type == DTPeripheralRecvType_notifyValue ) { //如果是可读数据
             if (model.type == DTPeripheralActionType_read && !ch.readAble) {
                 DTLog(@"XXXX读取事件的特征不能读取");
                 [indexSet addIndex:idx];
@@ -141,7 +141,14 @@
             model.peripheral = nil;
             [indexSet addIndex:idx];
         }
-        else if (ch.writeAble && [ch isEqual:model.ch] && (model.type == DTPeripheralActionType_write)) { //写入后的respnonse事件
+        else if (ch.writeAble && [ch isEqual:model.ch] && (model.type == DTPeripheralActionType_write) && type == DTPeripheralRecvType_writeValue) { //写入后的respnonse事件
+            model.block(self.peripheral, ch, error);
+            model.block = nil;
+            model.ch = nil;
+            model.peripheral = nil;
+            [indexSet addIndex:idx];
+        }
+        else if (ch.notifyAble && [ch isEqual:model.ch] && type == DTPeripheralRecvType_notifyState) {
             model.block(self.peripheral, ch, error);
             model.block = nil;
             model.ch = nil;
@@ -150,14 +157,16 @@
         }
     }];
     
-    DTLog(@"===========================%ld",array.count);
-    
     if (indexSet.count) {
         NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:array];
         [mutableArray removeObjectsAtIndexes:indexSet];
         [self.dic setObject:[mutableArray copy] forKey:key];
     }
 }
+
+
+
+
 
 //清除监听的事件
 - (void)clearObserveActions {

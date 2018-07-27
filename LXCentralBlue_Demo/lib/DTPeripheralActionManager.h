@@ -15,13 +15,22 @@
  */
 
 
-
+//给actionModel设置的type属性
 typedef NS_ENUM(NSInteger, DTPeripheralActionType) {
     DTPeripheralActionType_none,
     DTPeripheralActionType_read,           //外设读取事件
     DTPeripheralActionType_write,          //外设写入事件
-    DTPeripheralActionType_notify          //外设通知事件
+    DTPeripheralActionType_notify,         //外设通知事件
+    DTPeripheralActionType_notifyState     //通知状态改变的事件
 };
+
+//接收数据时的类型，即是从外设的那个代理方法收到的数据
+typedef NS_ENUM(NSInteger,DTPeripheralRecvType) {
+    DTPeripheralRecvType_notifyValue,       //- peripheral: didUpdateValueForCharacteristic: error:代理方法返回的数据
+    DTPeripheralRecvType_notifyState,       //- peripheral: didUpdateNotificationStateForCharacteristic: error:返回的数据
+    DTPeripheralRecvType_writeValue         //- peripheral: didWriteValueForCharacteristic: error:返回的数据
+};
+
 
 typedef void(^DTObserveCharacteristicValueBlock)(CBPeripheral *peripheral,CBCharacteristic *characteristc, NSError *error); //监听特征值
 
@@ -49,9 +58,8 @@ typedef void(^DTObserveCharacteristicValueBlock)(CBPeripheral *peripheral,CBChar
 - (void)cancelObserveForCharacteristic:(CBCharacteristic *)ch forPeripheral:(CBPeripheral *)peripheral;
 
 //收到数据的处理
-- (void)receiveDataFromCharacteristic:(CBCharacteristic *)ch forPeripheral:(CBPeripheral *)peripheral error:(NSError *)error;
+- (void)receiveDataWithType:(DTPeripheralRecvType)type characteristic:(CBCharacteristic *)ch forPeripheral:(CBPeripheral *)peripheral error:(NSError *)error;
 
-//清除监听的事件
 - (void)clearObserveActions;
 
 @end

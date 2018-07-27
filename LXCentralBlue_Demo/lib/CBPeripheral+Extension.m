@@ -246,7 +246,9 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     if (!self.delegate) {
         DTLog(@"没有设置代理==发现特征的");
     }
-    if (![[DTBLEManager shareManager] checkState]) {
+    NSError *error = [self checkState];
+    if (error) {
+        block(nil,nil,error);
         return;
     }
     [self setDiscoverCharacteristicsBlock:block];
@@ -257,6 +259,12 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
 //读取特征值
 - (BOOL)readValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block {
     if (characteristic == nil || (characteristic.properties & CBCharacteristicPropertyRead) != CBCharacteristicPropertyRead) {
+        return NO;
+    }
+    
+    NSError *error = [self checkState];
+    if (error) {
+        block(nil,nil,error);
         return NO;
     }
     
@@ -274,9 +282,11 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     }
     
     
-    if (![[DTBLEManager shareManager] checkState]) {
-        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_powerOff userInfo:@{@"msg":@"powered off"}];
-        block(nil,nil,error);
+    NSError *error = [self checkState];
+    if (error) {
+        if (block) {
+            block(nil,nil,error);
+        }
         return NO;
     }
     [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:DTPeripheralActionType_notify block:block];
@@ -298,34 +308,84 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     return YES;
 }
 
+//监听特征值
+//stateBlock状态改变的block
+//notifyBlock监听返回数据的值
+- (BOOL)setNotifyValueForObserver:(id)observer
+                forCharacteristic:(CBCharacteristic *)characteristic
+                       stateBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))stateBlock
+                      notifyBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))notifyBlock {
+    if (characteristic == nil || (characteristic.properties & CBCharacteristicPropertyNotify) != CBCharacteristicPropertyNotify) {
+        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_parameterError userInfo:@{@"msg":@"parameter error"}];
+        if (stateBlock) {
+            stateBlock(nil,nil,error);
+        }
+        
+        return NO;
+    }
+    
+    
+    NSError *error = [self checkState];
+    if (error) {
+        if (stateBlock) {
+            stateBlock(nil,nil,error);
+        }
+        return NO;
+    }
+    
+    //如果特征支持通知，那么设置为监听
+    if ((characteristic.properties & CBCharacteristicPropertyNotify) == CBCharacteristicPropertyNotify) {
+        [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:DTPeripheralActionType_notifyState block:stateBlock];
+        [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:DTPeripheralActionType_notify block:notifyBlock];
+        [self setNotifyValue:YES forCharacteristic:characteristic];
+        return YES;
+    }
+    else {
+        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_parameterError userInfo:@{@"msg":@"特征不支持监听"}];
+        if (stateBlock) {
+            stateBlock(nil,nil,error);
+        }
+        return NO;
+    }
+}
+
+- (BOOL)cancelNotifyValueForCharacteristic:(CBCharacteristic *)characteristic
+                                stateBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))stateBlock {
+    [self setNotifyValue:NO forCharacteristic:characteristic];
+    return YES;
+}
+
+
 //写数据
 - (BOOL)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block {
     if (characteristic == nil || data == nil) {
         if (block) {
             NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_parameterError userInfo:@{@"msg":@"没有data或characteristic"}];
-            block(nil,nil,error);
+            block(nil,nil,error,NO);
         }
         return NO;
     }
     
-    if (![[DTBLEManager shareManager] checkState]) {
-        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_powerOff userInfo:@{@"msg":@"powered off"}];
-        block(nil,nil,error);
-        return NO;
-    }
     
-    if (self.state != CBPeripheralStateConnected) {
-        NSError *error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_notConnected userInfo:@{@"msg":@"not connected"}];
-        block(nil,nil,error);
+    NSError *error = [self checkState];
+    if (error) {
+        block(nil,nil,error,NO);
         return NO;
     }
     DTLog(@"写入了数据:%@===characteristic:%@",data,characteristic);
     if ((characteristic.properties & CBCharacteristicPropertyWrite) == CBCharacteristicPropertyWrite) {
         [self writeValue:data forCharacteristic:characteristic type:(CBCharacteristicWriteWithResponse)];
-        [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:(DTPeripheralActionType_write) block:block];
+        [self.notifyActionManager addObserver:observer forPeripheral:self forCharacteristic:characteristic type:(DTPeripheralActionType_write) block:^(CBPeripheral *peripheral, CBCharacteristic *characteristc, NSError *error) {
+            if (block) {
+                block(peripheral,characteristc,error,YES);
+            }
+        }];
     }
     else if ((characteristic.properties & CBCharacteristicPropertyWriteWithoutResponse) == CBCharacteristicPropertyWriteWithoutResponse) {
         [self writeValue:data forCharacteristic:characteristic type:(CBCharacteristicWriteWithoutResponse)];
+        if (block) {
+            block(self,characteristic,nil,NO);
+        }
     }
     return YES;
 }
@@ -350,5 +410,19 @@ static NSString *const kStateChangedBlockKey = @"kStateChangedBlockKey";        
     [self clearCallBackBlocks];
     [self clearBindParameters];
 }
+
+//检查状态，蓝牙开关状态和蓝牙连接状态
+- (NSError *)checkState {
+    NSError *error = nil;
+    if (![[DTBLEManager shareManager] checkState]) {
+        error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_powerOff userInfo:@{@"msg":@"powered off"}];
+    }
+    
+    if (self.state != CBPeripheralStateConnected) {
+        error = [NSError errorWithDomain:DTBlueToothErrorDomain code:DTBlueToothErrorCode_notConnected userInfo:@{@"msg":@"not connected"}];
+    }
+    return error;
+}
+
 
 @end

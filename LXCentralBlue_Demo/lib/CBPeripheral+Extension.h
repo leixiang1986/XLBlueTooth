@@ -18,7 +18,7 @@ typedef void(^DTDiscoverServiceBlock)(CBPeripheral *peripheral, NSError *error);
 typedef void(^DTReadRssiBlock)(CBPeripheral *peripheral,NSNumber *rssi,NSError *error); //读取信号强度的回调block
 typedef void(^DTDiscoverCharacteriticsBlock)(CBPeripheral *peripheral,CBService *service,NSError *error); //外设扫描特征的回调
 
-typedef void(^DTWriteDataBlock)(CBPeripheral *peripheral, CBCharacteristic *characteristic,NSError *error);  //写入数据的回调
+typedef void(^DTWriteDataBlock)(CBPeripheral *peripheral, CBCharacteristic *characteristic,NSError *error, BOOL hasResponse);  //写入数据的回调
 
 @interface CBPeripheral (Extension)
 @property (nonatomic, strong) NSNumber *rssi;
@@ -60,10 +60,20 @@ typedef void(^DTWriteDataBlock)(CBPeripheral *peripheral, CBCharacteristic *char
 - (BOOL)writeValue:(NSData *)data forCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTWriteDataBlock)block;
 
 //监听某个特征值的notify,对oberver是弱引用，如果observer 销毁，不会回调block给observer
-- (BOOL)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer block:(DTObserveCharacteristicValueBlock)block;
+- (BOOL)observeValueForCharacteristic:(CBCharacteristic *)characteristic observer:(id)observer  block:(DTObserveCharacteristicValueBlock)block;
 
-//取消监听某个特征
-- (BOOL)cancelObserveValueForCharacteristic:(CBCharacteristic *)characteristic;
+//监听特征值
+//stateBlock状态改变的block
+//notifyBlock监听返回数据的值
+- (BOOL)setNotifyValueForObserver:(id)observer
+                forCharacteristic:(CBCharacteristic *)characteristic
+                       stateBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))stateBlock
+                      notifyBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))notifyBlock;
+
+//取消监听特征值(这里和观察者无关，所有的观察者的监听都取消掉了)
+//stateBlock状态改变的block
+- (BOOL)cancelNotifyValueForCharacteristic:(CBCharacteristic *)characteristic
+                                stateBlock:(void(^)(CBPeripheral *peripheral,CBCharacteristic *characteristic,NSError *error))stateBlock;
 
 //清除绑定的回调block和传入参数
 - (void)clearBindDatas;

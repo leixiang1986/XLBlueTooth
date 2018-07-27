@@ -24,7 +24,7 @@
 @property (nonatomic, strong) NSMutableArray *reconnectPerArr;  //自动重连数组
 @property (nonatomic, strong, readwrite) NSMutableArray *discoveredPerArr; //发现的外设数组
 @property (nonatomic, strong, readwrite) NSMutableArray *connectedPerArr; //连接的外设
-@property (nonatomic, copy) void (^discoveredBlock)(NSArray *peripherals); //发现的外设
+@property (nonatomic, copy) DTStateChangedBlock discoveredBlock; //发现的外设
 @property (nonatomic, strong) NSArray <CBUUID *>*defaultServices;   //蓝牙初始化后扫描用的服务UUID数组
 @property (nonatomic, strong) PDTBLEManagerActionMananger *actionManager;
 @end
@@ -32,30 +32,30 @@
 @implementation DTBLEManager
 
 + (instancetype)shareManager {
-    return [self shareManagerScanPeripheralWithDefaultServices:nil];
+    return [self shareManagerScanPeripheralWithDefaultServices:nil block:nil];
 }
 
-+ (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services {
-    return [self shareManagerWithIdentifier:nil services:services];
++ (instancetype)shareManagerScanPeripheralWithDefaultServices:(NSArray <CBUUID *>*)services block:(DTStateChangedBlock)block{
+    return [self shareManagerWithIdentifier:nil services:services block:block];
     
 }
 
-+ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services {
++ (instancetype)shareManagerWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services block:(DTStateChangedBlock)block{
     static DTBLEManager *instance = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[DTBLEManager alloc] initWithIdentifier:identifier services:services];
+        instance = [[DTBLEManager alloc] initWithIdentifier:identifier services:services block:block];
     });
     
     return instance;
 }
 
-- (instancetype)initWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services {
+- (instancetype)initWithIdentifier:(NSString *)identifier services:(NSArray <CBUUID *>*)services block:(DTStateChangedBlock)block{
     self = [super init];
     if (self) {
         _defaultServices = services;
-        
+        _discoveredBlock = block;
 #if  __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_0
         NSDictionary *options = nil;
         if (identifier.length) {
@@ -149,7 +149,7 @@
     }
 }
 
-- (void)scanPeripheralWithServices:(NSArray <CBUUID *>*)services stopDelay:(NSTimeInterval)timeInterval block:(void(^)(NSArray *peripherals))block {
+- (void)scanPeripheralWithServices:(NSArray <CBUUID *>*)services stopDelay:(NSTimeInterval)timeInterval block:(DTStateChangedBlock)block {
     _discoveredBlock = block;
     [self scanServices:services autoStop:timeInterval];
 }
@@ -317,6 +317,13 @@
     [self.actionManager centralManagerStateUpdate:central];
 
     [self scanServices:nil autoStop:MAXFLOAT];
+}
+
+//2,
+- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
+    NSLog(@"==2，将要恢复:%@",dict);
+    
+    
 }
 
 
